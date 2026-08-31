@@ -1,8 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { GameState } from "../../../simulation/engine";
 import { ThemeDefinition } from "../../../theme/themes";
 import { Decree, SectorState } from "../../../types/simulation";
 import { proceduralRadio } from "../../../audio/radio";
+import { useTooltip } from "../../components/GlobalTooltip";
 import {
   Shield,
   Cpu,
@@ -34,7 +35,14 @@ export function ArcheView({
   onAllocateSectorEnergy,
   onEnactSenateLaw,
 }: ArcheViewProps) {
+  const { showTooltip, hideTooltip } = useTooltip();
   const [selectedSector, setSelectedSector] = useState<SectorState | null>(gameState.sectors[0] || null);
+
+  useEffect(() => {
+    return () => {
+      hideTooltip();
+    };
+  }, [hideTooltip]);
 
   const leader = gameState.genesis.pillar_1_governance.leader_profile;
 
@@ -198,6 +206,19 @@ export function ArcheView({
                       proceduralRadio.playUIChime("CLICK");
                       setSelectedSector(sec);
                     }}
+                    onMouseEnter={(e) => {
+                      showTooltip({
+                        title: sec.name,
+                        category: "Secteur Arche",
+                        status: `Niveau ${sec.techLevel} • ${sec.isOnline ? "En ligne" : "Hors ligne"}`,
+                        description: `${sec.description} Personnel assigné: ${sec.personnelAssigned} colons. Intégrité de la coque: ${sec.integrityPct}%.`,
+                        modifiers: [
+                          `+${sec.techLevel * 5}% Multiplicateur d'efficience locale`,
+                          `+${Math.round(sec.integrityPct / 10)}% Résistance thermique du secteur`
+                        ]
+                      }, e);
+                    }}
+                    onMouseLeave={hideTooltip}
                     className={`p-3 rounded-xl border font-mono text-xs cursor-pointer transition-all ${
                       isSelected
                         ? "bg-cyan-500/20 border-cyan-400 text-white shadow-[0_0_10px_rgba(0,212,255,0.3)]"
@@ -256,12 +277,38 @@ export function ArcheView({
                 <div className="flex gap-2">
                   <button
                     onClick={() => onAllocateSectorEnergy(selectedSector.id, -10)}
+                    onMouseEnter={(e) => {
+                      showTooltip({
+                        title: "Réduction Énergie (-10 MW)",
+                        category: "Réseau Énergétique",
+                        status: "Ajustement Électrique",
+                        description: "Diminue la charge allouée à ce secteur de 10 MW. Utile pour économiser les réserves de l'Arche en cas de crise majeure.",
+                        modifiers: [
+                          "-5% Rendement industriel du secteur",
+                          "-10% Débit de filtrage de l'air"
+                        ]
+                      }, e);
+                    }}
+                    onMouseLeave={hideTooltip}
                     className="flex-1 py-1.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded border border-white/10 cursor-pointer"
                   >
                     - 10 MW
                   </button>
                   <button
                     onClick={() => onAllocateSectorEnergy(selectedSector.id, 10)}
+                    onMouseEnter={(e) => {
+                      showTooltip({
+                        title: "Augmentation Énergie (+10 MW)",
+                        category: "Réseau Énergétique",
+                        status: "Ajustement Électrique",
+                        description: "Injecte 10 MW supplémentaires dans les bobines thermo-couples de ce secteur pour sur-cadencer la productivité.",
+                        modifiers: [
+                          "+10% Débit d'impression des nanorobots",
+                          "+8% Efficacité de filtrage et recyclage"
+                        ]
+                      }, e);
+                    }}
+                    onMouseLeave={hideTooltip}
                     className="flex-1 py-1.5 bg-cyan-600 hover:bg-cyan-500 text-black font-bold rounded border border-cyan-400 cursor-pointer"
                   >
                     + 10 MW

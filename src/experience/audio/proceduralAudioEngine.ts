@@ -364,6 +364,9 @@ export class ProceduralAudioEngine {
   }
 
   public setBusVolume(bus: keyof AudioBuses, val: number) {
+    if (!this.ctx) {
+      this.init();
+    }
     const clamped = Math.max(0, Math.min(1, val));
     this.buses[bus] = clamped;
 

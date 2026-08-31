@@ -110,6 +110,8 @@ export interface GameState {
     biomass: number;
     o2: number;
     stability: number;
+    water: number;
+    alloys: number;
   }>;
 }
 
@@ -336,6 +338,8 @@ export function createInitialGameState(genesis: GenesisLorePayload): GameState {
         biomass: initRes.biomass_kg,
         o2: initRes.oxygen_l,
         stability: genesis.pillar_1_governance.senate_stability,
+        water: initRes.water_l || 1000,
+        alloys: initRes.alloys_tonnes || 100,
       },
     ],
   };
@@ -821,6 +825,8 @@ export function stepSimulation(state: GameState, deltaTicks: number = 1): GameSt
         biomass: Math.round(resources.biomass_kg),
         o2: Math.round(resources.oxygen_l),
         stability: Math.round(senateStability),
+        water: Math.round(resources.water_l),
+        alloys: Math.round(resources.alloys_tonnes),
       });
       if (historyDeltas.length > 50) historyDeltas.shift();
     }

@@ -293,8 +293,13 @@ export function SetupWizard({ theme, onLaunchGame, onBackToMainMenu }: SetupWiza
       },
     };
 
-    const validated = GenesisLorePayloadSchema.parse(payload);
-    onLaunchGame(validated);
+    const result = GenesisLorePayloadSchema.safeParse(payload);
+    if (!result.success) {
+      console.warn("GenesisLorePayload validation warning:", result.error.format());
+      onLaunchGame(payload as any);
+    } else {
+      onLaunchGame(result.data);
+    }
   };
 
   return (

@@ -6,6 +6,8 @@ import { BUILDING_BLUEPRINTS, ERAS_CONFIG } from "../../../simulation/constants"
 import { InstalledBuilding, BuildingBlueprint, BuildingCategory, BuildQueueItem } from "../../../types/simulation";
 import { MicroLogItem } from "../../../types/journal";
 import { proceduralRadio } from "../../../audio/radio";
+import { useTooltip } from "../../components/GlobalTooltip";
+import { D3ResourceChart } from "./D3ResourceChart";
 import {
   Building2,
   Hammer,
@@ -43,7 +45,14 @@ export function SimCityView({
   onRepairBuilding,
   onSetNiaMode,
 }: SimCityViewProps) {
+  const { showTooltip, hideTooltip } = useTooltip();
   const [activeSubTab, setActiveSubTab] = useState<"URBAN" | "TERRAFORMING" | "NIA" | "STATS">("URBAN");
+
+  React.useEffect(() => {
+    return () => {
+      hideTooltip();
+    };
+  }, [hideTooltip]);
   const [selectedZLevel, setSelectedZLevel] = useState<ZLevel>("Z_ZERO_DOME");
   const [selectedBuilding, setSelectedBuilding] = useState<InstalledBuilding | null>(null);
   const [selectedBlueprintToPlace, setSelectedBlueprintToPlace] = useState<string | null>(null);
@@ -255,10 +264,54 @@ export function SimCityView({
                   const isBuildingSelected =
                     selectedBuilding?.building_instance_id === building?.building_instance_id;
 
+                  const getTooltipData = () => {
+                    if (building) {
+                      const modifiers: string[] = [];
+                      if (building.category === "ENE") {
+                        modifiers.push("+15% Efficacité de stockage supraconducteur");
+                        modifiers.push("+10% Taux d'infusion de deutérium");
+                      } else if (building.category === "AGR") {
+                        modifiers.push("+25% Croissance accélérée par spectre UV");
+                        modifiers.push("-10% Pertes en eau par recyclage direct");
+                      } else if (building.category === "HAB") {
+                        modifiers.push("+10% Confort de vie résidentiel");
+                        modifiers.push("+5% Taux de natalité");
+                      } else {
+                        modifiers.push("+12% Vitesse de production de secours");
+                      }
+                      return {
+                        title: building.name,
+                        category: building.category === "HAB" ? "Habitation" : building.category === "ENE" ? "Énergie" : building.category === "AGR" ? "Agriculture" : "Industrie/Logistique",
+                        status: `${building.status} (${building.integrity_pct}% Intégrité)`,
+                        description: `Charge électrique de la structure : ${building.power_consumption_mw} GW. Personnel de maintenance : ${building.personnel_assigned} citoyens colons.`,
+                        modifiers,
+                      };
+                    } else if (queueItem) {
+                      const pct = Math.round((queueItem.progress_ticks / queueItem.total_duration_ticks) * 100);
+                      return {
+                        title: `Chantier: ${queueItem.name}`,
+                        category: "Construction",
+                        status: `Progrès : ${pct}%`,
+                        description: `Structure en cours d'assemblage atomique. Durée : ${queueItem.progress_ticks}/${queueItem.total_duration_ticks} cycles de ticks. Auto-build N.I.A : ${queueItem.auto_built_by_nia ? "Actif" : "Inactif"}.`,
+                        modifiers: ["+30% Conductivité géothermique sous dôme", "+15% Efficacité d'assemblage standard"],
+                      };
+                    } else {
+                      return {
+                        title: `Case libre (${x},${y})`,
+                        category: "Terrain",
+                        status: "Disponible",
+                        description: `Emplacement topologique libre prêt à accueillir toute infrastructure compatible avec le niveau Z ${selectedZLevel}.`,
+                        modifiers: ["100% Efficacité de fondation tellurique"],
+                      };
+                    }
+                  };
+
                   return (
                     <button
                       key={`${x}-${y}`}
                       onClick={() => handleCellClick(x, y)}
+                      onMouseEnter={(e) => showTooltip(getTooltipData(), e)}
+                      onMouseLeave={hideTooltip}
                       className={`w-7 h-7 sm:w-9 sm:h-9 rounded-md border flex items-center justify-center text-[10px] font-mono transition-all cursor-pointer relative group ${
                         building
                           ? isBuildingSelected
@@ -280,13 +333,6 @@ export function SimCityView({
                           ? "bg-slate-100 border-slate-200 hover:bg-slate-200 text-slate-400"
                           : "bg-slate-900/40 border-white/5 hover:bg-white/10 text-slate-600"
                       }`}
-                      title={
-                        building
-                          ? `${building.name} (${building.status}) - Integrity: ${building.integrity_pct}%`
-                          : queueItem
-                          ? `Chantier: ${queueItem.name} (${queueItem.progress_ticks}/${queueItem.total_duration_ticks} ticks) [${queueItem.auto_built_by_nia ? 'N.I.A.' : 'Joueur'}]`
-                          : `Case libre (${x},${y})`
-                      }
                     >
                       {building ? (
                         building.category === "HAB" ? (
@@ -945,6 +991,10 @@ export function SimCityView({
               <div className="text-xl font-bold text-purple-400">{Math.round(gameState.resources.energy_gw)} GW</div>
               <div className="text-[9px] text-emerald-400">Charge nominale</div>
             </div>
+          </div>
+
+          <div className="pt-4 border-t border-sky-500/10">
+            <D3ResourceChart historyDeltas={gameState.historyDeltas} isLight={theme.isLight} />
           </div>
         </div>
       )}

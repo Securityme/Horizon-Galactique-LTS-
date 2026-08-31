@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { GameState } from "../../simulation/engine";
 import { ThemeDefinition } from "../../theme/themes";
 import { proceduralRadio } from "../../audio/radio";
+import { EventLogView } from "../components/EventLogView";
 import {
   Shield,
   Zap,
@@ -40,7 +41,7 @@ export function TacticalSideDrawer({
   onOpenNiaModal,
 }: TacticalSideDrawerProps) {
   const isLight = theme.isLight ?? false;
-  const [activeTab, setActiveTab] = useState<"DIRECTIVES" | "CRISIS" | "SCANNER">("DIRECTIVES");
+  const [activeTab, setActiveTab] = useState<"DIRECTIVES" | "CRISIS" | "SCANNER" | "JOURNAL">("DIRECTIVES");
 
   if (!isOpen) return null;
 
@@ -97,6 +98,7 @@ export function TacticalSideDrawer({
           {[
             { id: "DIRECTIVES" as const, label: "Directives", count: null },
             { id: "CRISIS" as const, label: "Crises", count: urgentEvents.length },
+            { id: "JOURNAL" as const, label: "Journal", count: gameState.journalItems?.length || 0 },
             { id: "SCANNER" as const, label: "Radar Sol", count: null },
           ].map((tab) => {
             const isActive = activeTab === tab.id;
@@ -279,6 +281,12 @@ export function TacticalSideDrawer({
                   <span className="font-bold text-blue-300">88%</span>
                 </div>
               </div>
+            </div>
+          )}
+
+          {activeTab === "JOURNAL" && (
+            <div className="h-full flex flex-col min-h-0">
+              <EventLogView gameState={gameState} theme={theme} />
             </div>
           )}
         </div>
