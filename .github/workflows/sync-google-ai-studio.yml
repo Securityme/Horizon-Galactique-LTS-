@@ -1,0 +1,50 @@
+name: Sync with Google AI Studio
+
+on:
+  push:
+    branches: [ dev ]
+    paths:
+      - 'strates/strates_3136_v41_updated.json'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force sync with Google AI Studio'
+        required: false
+        default: 'false'
+  workflow_run:
+    workflows: ["Generate Strates Matrix"]
+    types:
+      - completed
+
+jobs:
+  sync:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Sync with Google AI Studio
+        run: bun run sync:google-ai-studio
+        env:
+          GOOGLE_AI_STUDIO_API_KEY: ${{ secrets.GOOGLE_AI_STUDIO_API_KEY }}
+          GOOGLE_AI_STUDIO_PROJECT_ID: ${{ secrets.GOOGLE_AI_STUDIO_PROJECT_ID || 'horizon-galactique-lts' }}
+          GOOGLE_AI_STUDIO_DATASET_ID: ${{ secrets.GOOGLE_AI_STUDIO_DATASET_ID || 'strates_matrix' }}
+          GOOGLE_AI_STUDIO_ENDPOINT: ${{ secrets.GOOGLE_AI_STUDIO_ENDPOINT || 'https://aiplatform.googleapis.com/v1' }}
+
+      - name: Commit sync log
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          timestamp=$(date +%Y%m%d%H%M%S)
+          echo "Google AI Studio sync: $timestamp" >> SYNC_LOG.md
+          git add SYNC_LOG.md
+          git diff --cached --quiet || git commit -m "chore: log Google AI Studio sync"
+          git push
