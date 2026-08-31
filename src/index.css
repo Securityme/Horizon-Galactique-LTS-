@@ -1,0 +1,212 @@
+@import "tailwindcss";
+
+@layer base {
+  :root {
+    --arche-accent: #0f172a;
+    --arche-bg: #f8fafc;
+  }
+
+  * {
+    font-variant-numeric: tabular-nums;
+  }
+}
+
+/* ========================================================= */
+/* UTILITAIRES DE DEFILEMENT TOUCH SAFARI & MOBILE           */
+/* ========================================================= */
+
+.scroll-smooth-touch {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-y: contain;
+  scroll-behavior: smooth;
+  touch-action: pan-y;
+}
+
+.scroll-horizontal-touch {
+  -webkit-overflow-scrolling: touch;
+  overscroll-behavior-x: contain;
+  scroll-behavior: smooth;
+  touch-action: pan-x;
+}
+
+/* ========================================================= */
+/* CLASSES SÉMANTIQUES DES PROPRIÉTÉS ET RESSOURCES          */
+/* ========================================================= */
+
+.prop-energy {
+  color: #f59e0b;
+}
+.prop-energy-bg {
+  background-color: rgba(245, 158, 11, 0.12);
+  border-color: rgba(245, 158, 11, 0.35);
+  color: #d97706;
+}
+
+.prop-oxygen {
+  color: #0284c7;
+}
+.prop-oxygen-bg {
+  background-color: rgba(2, 132, 199, 0.12);
+  border-color: rgba(2, 132, 199, 0.35);
+  color: #0369a1;
+}
+
+.prop-water {
+  color: #2563eb;
+}
+.prop-water-bg {
+  background-color: rgba(37, 99, 235, 0.12);
+  border-color: rgba(37, 99, 235, 0.35);
+  color: #1d4ed8;
+}
+
+.prop-alloys {
+  color: #ea580c;
+}
+.prop-alloys-bg {
+  background-color: rgba(234, 88, 12, 0.12);
+  border-color: rgba(234, 88, 12, 0.35);
+  color: #c2410c;
+}
+
+.prop-deuterium {
+  color: #7c3aed;
+}
+.prop-deuterium-bg {
+  background-color: rgba(124, 58, 237, 0.12);
+  border-color: rgba(124, 58, 237, 0.35);
+  color: #6d28d9;
+}
+
+.prop-population {
+  color: #059669;
+}
+.prop-population-bg {
+  background-color: rgba(5, 150, 105, 0.12);
+  border-color: rgba(5, 150, 105, 0.35);
+  color: #047857;
+}
+
+.prop-credits {
+  color: #eab308;
+}
+.prop-credits-bg {
+  background-color: rgba(234, 179, 8, 0.12);
+  border-color: rgba(234, 179, 8, 0.35);
+  color: #ca8a04;
+}
+
+.prop-alert {
+  color: #e11d48;
+}
+.prop-alert-bg {
+  background-color: rgba(225, 29, 72, 0.12);
+  border-color: rgba(225, 29, 72, 0.35);
+  color: #be123c;
+}
+
+.prop-governance {
+  color: #9333ea;
+}
+.prop-governance-bg {
+  background-color: rgba(147, 51, 234, 0.12);
+  border-color: rgba(147, 51, 234, 0.35);
+  color: #7e22ce;
+}
+
+/* ========================================================= */
+/* MODÈLE DE PROFONDEUR — 3 NIVEAUX DE VERRE                 */
+/* ========================================================= */
+
+.glass-l1 {
+  backdrop-filter: blur(8px);
+}
+
+.glass-l2 {
+  backdrop-filter: blur(16px);
+}
+
+.glass-l3 {
+  backdrop-filter: blur(32px);
+}
+
+/* ========================================================= */
+/* LUMIÈRE SPÉCULAIRE SUBTILE                                */
+/* ========================================================= */
+
+.specular-border {
+  border-top-color: rgba(255, 255, 255, 0.2);
+  border-left-color: rgba(255, 255, 255, 0.15);
+  border-right-color: rgba(255, 255, 255, 0.06);
+  border-bottom-color: rgba(255, 255, 255, 0.04);
+}
+
+/* ========================================================= */
+/* EFFETS RÉTRO DIÉGÉTIQUES OPTIQUES                         */
+/* ========================================================= */
+
+/* 1. Balayage Scanlines CRT */
+.crt-scanlines {
+  background: linear-gradient(
+    rgba(18, 16, 16, 0) 50%, 
+    rgba(0, 0, 0, 0.25) 50%
+  ), linear-gradient(
+    90deg,
+    rgba(255, 0, 0, 0.02),
+    rgba(0, 255, 0, 0.01),
+    rgba(0, 0, 255, 0.02)
+  );
+  background-size: 100% 3px, 4px 100%;
+}
+
+/* 2. Aberration Chromatique (Sans distorsion néon) */
+.crt-aberration {
+  text-shadow: none;
+}
+
+/* 3. Micro-Grain Silicium */
+.crt-grain {
+  background-image: radial-gradient(rgba(0, 0, 0, 0.04) 1px, transparent 0);
+  background-size: 4px 4px;
+}
+
+/* 4. Vignettage Optique des Coins */
+.crt-vignette {
+  box-shadow: inset 0 0 80px rgba(0, 0, 0, 0.5);
+}
+
+/* ========================================================= */
+/* CUSTOM TACTICAL SCROLLBAR & TOUCH SCROLLING               */
+/* ========================================================= */
+
+html, body {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+}
+
+.scroll-smooth-touch {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x pan-y;
+  overscroll-behavior: contain;
+}
+
+.scroll-horizontal-touch {
+  -webkit-overflow-scrolling: touch;
+  touch-action: pan-x;
+  overscroll-behavior-x: contain;
+}
+
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.08);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(100, 116, 139, 0.4);
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(100, 116, 139, 0.7);
+}

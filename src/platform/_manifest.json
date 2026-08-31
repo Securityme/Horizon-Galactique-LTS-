@@ -1,0 +1,9 @@
+{
+  "protocol": "Tria-Manifest Fractal",
+  "version": "1.0.0",
+  "path": "src/platform",
+  "name": "platform",
+  "created_at": "2026-08-30T15:42:57.411Z",
+  "status": "NOMINAL",
+  "module_type": "Horizon Galactique Core Node"
+}

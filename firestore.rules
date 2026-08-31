@@ -1,0 +1,109 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Global Safety Net - Default Deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isSignedIn() && request.auth.uid == userId;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    // --- Entity Validation Helpers ---
+
+    function isValidUserProfile(data) {
+      return data.userId is string && data.userId == request.auth.uid &&
+             data.displayName is string && data.displayName.size() > 0 && data.displayName.size() <= 80 &&
+             (!('email' in data) || (data.email is string && data.email.size() <= 120)) &&
+             (!('totalSolsPlayed' in data) || (data.totalSolsPlayed is number && data.totalSolsPlayed >= 0)) &&
+             (!('victoriesCount' in data) || (data.victoriesCount is number && data.victoriesCount >= 0)) &&
+             data.lastPlayedAt is string && data.lastPlayedAt.size() <= 50 &&
+             data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    function isValidGameSave(data, userId) {
+      return data.id is string && isValidId(data.id) &&
+             data.userId is string && data.userId == userId && data.userId == request.auth.uid &&
+             data.gameName is string && data.gameName.size() > 0 && data.gameName.size() <= 100 &&
+             data.seed is number &&
+             data.sol is number && data.sol >= 0 &&
+             data.tick is number && data.tick >= 0 && data.tick <= 24 &&
+             data.era is string && data.era.size() <= 60 &&
+             data.population is number && data.population >= 0 &&
+             data.energy is number &&
+             data.stability is number && data.stability >= 0 && data.stability <= 100 &&
+             (!('leaderName' in data) || (data.leaderName is string && data.leaderName.size() <= 80)) &&
+             data.gameStateJson is string && data.gameStateJson.size() > 0 && data.gameStateJson.size() <= 800000 &&
+             data.updatedAt is string && data.updatedAt.size() <= 50 &&
+             data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    function isValidPublicArchive(data) {
+      return data.archiveId is string && isValidId(data.archiveId) &&
+             data.authorId is string && data.authorId == request.auth.uid &&
+             data.leaderTitle is string && data.leaderTitle.size() > 0 && data.leaderTitle.size() <= 80 &&
+             data.colonyName is string && data.colonyName.size() > 0 && data.colonyName.size() <= 100 &&
+             data.maxSols is number && data.maxSols >= 0 &&
+             data.epitaphText is string && data.epitaphText.size() <= 2000 &&
+             data.gloryScore is number && data.gloryScore >= 0 &&
+             data.createdAt is string && data.createdAt.size() <= 50;
+    }
+
+    // --- Collection Security Rules ---
+
+    // 1. User Profiles
+    match /users/{userId} {
+      allow get: if isOwner(userId);
+      allow list: if false; // User profiles cannot be scraped
+      allow create: if isOwner(userId) && isValidId(userId) && isValidUserProfile(incoming());
+      allow update: if isOwner(userId) && isValidId(userId) && isValidUserProfile(incoming()) &&
+                    incoming().userId == existing().userId &&
+                    incoming().createdAt == existing().createdAt;
+      allow delete: if isOwner(userId);
+
+      // 2. User Private Game Saves (Lignes Temporelles)
+      match /saves/{saveId} {
+        allow get: if isOwner(userId) && isValidId(saveId);
+        allow list: if isOwner(userId);
+        allow create: if isOwner(userId) && isValidId(saveId) && isValidGameSave(incoming(), userId);
+        allow update: if isOwner(userId) && isValidId(saveId) && isValidGameSave(incoming(), userId) &&
+                      incoming().userId == existing().userId &&
+                      incoming().id == existing().id &&
+                      incoming().createdAt == existing().createdAt;
+        allow delete: if isOwner(userId) && isValidId(saveId);
+      }
+    }
+
+    // 3. Public Hall of Records & Chronicles (PublicArchives)
+    match /public_archives/{archiveId} {
+      allow get, list: if true; // Publicly readable
+      allow create: if isSignedIn() && isValidId(archiveId) && isValidPublicArchive(incoming());
+      allow update: if isSignedIn() && isValidId(archiveId) && isValidPublicArchive(incoming()) &&
+                    existing().authorId == request.auth.uid &&
+                    incoming().authorId == existing().authorId &&
+                    incoming().archiveId == existing().archiveId &&
+                    incoming().createdAt == existing().createdAt;
+      allow delete: if isSignedIn() && isValidId(archiveId) && existing().authorId == request.auth.uid;
+    }
+  }
+}

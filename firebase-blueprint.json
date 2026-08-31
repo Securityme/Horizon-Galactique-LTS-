@@ -1,0 +1,172 @@
+{
+  "entities": {
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Profil de l'Administrateur Suprême (Archonte) et statistiques globales",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "description": "ID unique de l'utilisateur Firebase Auth",
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "displayName": {
+          "type": "string",
+          "description": "Nom ou titre officiel de l'Archonte",
+          "maxLength": 80
+        },
+        "email": {
+          "type": "string",
+          "description": "Adresse email du joueur",
+          "maxLength": 120
+        },
+        "totalSolsPlayed": {
+          "type": "number",
+          "description": "Cumul des Sols survécus à travers toutes les parties"
+        },
+        "victoriesCount": {
+          "type": "number",
+          "description": "Nombre de transitions d'ères majeures accomplies"
+        },
+        "lastPlayedAt": {
+          "type": "string",
+          "description": "Horodatage ISO de la dernière session"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Horodatage de création du profil"
+        }
+      },
+      "required": ["userId", "displayName", "lastPlayedAt", "createdAt"]
+    },
+    "GameSave": {
+      "title": "GameSave",
+      "description": "Snapshot sérialisé d'une partie (Ligne Temporelle d'Horizon Galactique)",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "ID de la sauvegarde",
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "userId": {
+          "type": "string",
+          "description": "ID du propriétaire de la sauvegarde",
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "gameName": {
+          "type": "string",
+          "description": "Nom de la partie / Colonie",
+          "maxLength": 100
+        },
+        "seed": {
+          "type": "number",
+          "description": "Matricule de Ligne Temporelle (Master Seed 32-bit)"
+        },
+        "sol": {
+          "type": "number",
+          "description": "Sol courant atteint"
+        },
+        "tick": {
+          "type": "number",
+          "description": "Tick dans le sol (0-23)"
+        },
+        "era": {
+          "type": "string",
+          "description": "Nom de l'Ère active",
+          "maxLength": 60
+        },
+        "population": {
+          "type": "number",
+          "description": "Nombre d'Astraliens vivants"
+        },
+        "energy": {
+          "type": "number",
+          "description": "Énergie nette disponible en GW"
+        },
+        "stability": {
+          "type": "number",
+          "description": "Indice de stabilité politique (0-100)"
+        },
+        "leaderName": {
+          "type": "string",
+          "description": "Nom du Leader Primat-Archonte",
+          "maxLength": 80
+        },
+        "gameStateJson": {
+          "type": "string",
+          "description": "Payload JSON compressé de l'état complet du simulateur",
+          "maxLength": 800000
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Horodatage de la dernière écriture"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Horodatage de création de la sauvegarde"
+        }
+      },
+      "required": ["id", "userId", "gameName", "seed", "sol", "tick", "era", "population", "energy", "stability", "gameStateJson", "updatedAt", "createdAt"]
+    },
+    "PublicArchive": {
+      "title": "PublicArchive",
+      "description": "Chronique d'épitaphe et hauts-faits publics partagés par la communauté",
+      "type": "object",
+      "properties": {
+        "archiveId": {
+          "type": "string",
+          "description": "ID de la chronique publique",
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "authorId": {
+          "type": "string",
+          "description": "ID du joueur auteur",
+          "pattern": "^[a-zA-Z0-9_\\-]+$"
+        },
+        "leaderTitle": {
+          "type": "string",
+          "description": "Titre du Primat-Archonte",
+          "maxLength": 80
+        },
+        "colonyName": {
+          "type": "string",
+          "description": "Nom de la colonie",
+          "maxLength": 100
+        },
+        "maxSols": {
+          "type": "number",
+          "description": "Sols survécus avant fin de ligne temporelle"
+        },
+        "epitaphText": {
+          "type": "string",
+          "description": "Épitaphe générée par la N.I.A.",
+          "maxLength": 2000
+        },
+        "gloryScore": {
+          "type": "number",
+          "description": "Score de gloire finale accumulée"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Date de publication"
+        }
+      },
+      "required": ["archiveId", "authorId", "leaderTitle", "colonyName", "maxSols", "epitaphText", "gloryScore", "createdAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": { "$ref": "UserProfile" },
+      "description": "Documents de profil utilisateur de l'Archonte"
+    },
+    "/users/{userId}/saves/{saveId}": {
+      "schema": { "$ref": "GameSave" },
+      "description": "Sauvegardes de parties privées de l'utilisateur"
+    },
+    "/public_archives/{archiveId}": {
+      "schema": { "$ref": "PublicArchive" },
+      "description": "Chroniques d'épitaphes et annales publiques des anciennes colonies"
+    }
+  }
+}
