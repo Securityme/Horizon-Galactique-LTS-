@@ -1,42 +1,69 @@
 {
-  "name": "react-example",
-  "private": true,
-  "version": "0.0.0",
-  "type": "module",
+  "name": "horizon-galactique-lts",
+  "version": "0.1.0",
+  "description": "Horizon Galactique LTS - 3136 Strates Matrix Implementation",
+  "author": "Securityme",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Securityme/Horizon-Galactique-LTS-"
+  },
+  "bugs": {
+    "url": "https://github.com/Securityme/Horizon-Galactique-LTS-/issues"
+  },
+  "homepage": "https://horizon-galactique.lts",
+  "keywords": [
+    "react",
+    "typescript",
+    "vite",
+    "tailwindcss",
+    "d3",
+    "motion",
+    "firebase",
+    "genai",
+    "google-ai-studio",
+    "strates",
+    "matrix"
+  ],
   "scripts": {
-    "dev": "tsx server.ts",
-    "build": "vite build && esbuild server.ts --bundle --platform=node --format=cjs --packages=external --sourcemap --outfile=dist/server.cjs",
-    "start": "node dist/server.cjs",
-    "preview": "vite preview",
-    "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit"
+    "dev": "vite",
+    "build": "tsc && vite build",
+    "build:client": "vite build",
+    "build:server": "tsc",
+    "lint": "tsc --noEmit",
+    "lint:fix": "prettier --write \"src/**/*.{ts,tsx}\"",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "test:integration": "vitest --config vitest.integration.config.ts",
+    "generate:strates": "bun run scripts/generateStrates.ts",
+    "update:strates": "bun run scripts/updateStratesFromGitHub.ts",
+    "sync:github": "bun run scripts/syncGitHubStatus.ts",
+    "sync:google-ai-studio": "bun run scripts/syncGoogleAIStudio.ts",
+    "sync:all": "bun run sync:github && bun run sync:google-ai-studio",
+    "validate:strates": "bun run scripts/validateStrates.ts"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
-    "@tailwindcss/vite": "^4.1.14",
-    "@vitejs/plugin-react": "^5.0.4",
-    "canvas-confetti": "^1.9.4",
+    "@google-cloud/aiplatform": "^7.0.0",
     "d3": "^7.9.0",
-    "dotenv": "^17.2.3",
     "express": "^4.21.2",
     "firebase": "^12.18.0",
     "lucide-react": "^0.546.0",
     "motion": "^12.23.24",
     "react": "^19.0.1",
     "react-dom": "^19.0.1",
-    "vite": "^6.2.3",
-    "zod": "^4.5.4"
+    "tailwindcss": "^4.1.14"
   },
   "devDependencies": {
-    "@types/canvas-confetti": "^1.9.0",
     "@types/d3": "^7.4.3",
     "@types/express": "^4.17.21",
-    "@types/node": "^22.14.0",
-    "autoprefixer": "^10.4.21",
-    "esbuild": "^0.25.0",
-    "tailwindcss": "^4.1.14",
-    "tsx": "^4.21.0",
-    "typescript": "~5.8.2",
-    "vite": "^6.2.3"
+    "@types/react": "^19.0.1",
+    "@types/react-dom": "^19.0.1",
+    "@vitejs/plugin-react": "^4.3.3",
+    "jsdom": "^25.0.1",
+    "prettier": "^3.3.3",
+    "typescript": "^5.8.2",
+    "vite": "^6.2.3",
+    "vitest": "^2.1.3"
   }
 }

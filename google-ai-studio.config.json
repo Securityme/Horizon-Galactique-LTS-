@@ -1,0 +1,31 @@
+{
+  "googleAIStudio": {
+    "enabled": true,
+    "projectId": "horizon-galactique-lts",
+    "datasetId": "strates_matrix",
+    "syncFrequency": "daily",
+    "syncTriggers": [
+      "on_push",
+      "on_generate",
+      "manual"
+    ],
+    "dataFormat": "json",
+    "include": [
+      "strates",
+      "metadata",
+      "github_status"
+    ],
+    "exclude": [],
+    "aiFeatures": {
+      "analysis": true,
+      "recommendations": true,
+      "progressTracking": true,
+      "documentation": true
+    }
+  },
+  "sync": {
+    "autoCommit": true,
+    "logFile": "SYNC_LOG.md",
+    "timestampFormat": "ISO8601"
+  }
+}

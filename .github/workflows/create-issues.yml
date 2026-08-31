@@ -1,0 +1,69 @@
+name: Create Strates Issues
+
+on:
+  workflow_dispatch:
+    inputs:
+      start_id:
+        description: "Start strate ID (0-3135)"
+        required: true
+        default: "0"
+      end_id:
+        description: "End strate ID (0-3135)"
+        required: true
+        default: "95"
+      priority:
+        description: "Priority filter (P0, P1, P2, P3, all)"
+        required: false
+        default: "all"
+
+jobs:
+  create-issues:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Create issues from strates
+        run: |
+          START_ID=${{ inputs.start_id }}
+          END_ID=${{ inputs.end_id }}
+          PRIORITY=${{ inputs.priority }}
+          
+          for ((id=START_ID; id<=END_ID; id++)); do
+            str=$(bun run -e "import data from './strates/strates_3136_v41_updated.json'; console.log(data.strates[id].str)")
+            designation=$(bun run -e "import data from './strates/strates_3136_v41_updated.json'; console.log(data.strates[id].designation)")
+            famille=$(bun run -e "import data from './strates/strates_3136_v41_updated.json'; console.log(data.strates[id].famille)")
+            role=$(bun run -e "import data from './strates/strates_3136_v41_updated.json'; console.log(data.strates[id].role)")
+            priority=$(bun run -e "import data from './strates/strates_3136_v41_updated.json'; console.log(data.strates[id].github_status.priority)")
+            
+            if [ "$PRIORITY" = "all" ] || [ "$PRIORITY" = "$priority" ]; then
+              gh issue create                 --title "[STRATE] $str - $designation"                 --body "## Strate Information
+- **ID**: $id
+- **Strate**: $str
+- **Famille**: $famille
+- **Role**: $role
+- **Priorite**: $priority
+
+## Implementation Status
+- [ ] Design
+- [ ] Development
+- [ ] Testing
+- [ ] Documentation
+- [ ] Review
+
+## GitHub Mapping
+- **File**: TBD
+- **Dependencies**: []
+
+## Notes
+Auto-generated from strates matrix."                 --label "strate,implementation,priority-$priority"                 --assignee Securityme
+            fi
+          done
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

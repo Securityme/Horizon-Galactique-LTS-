@@ -1,0 +1,15 @@
+# Code Owners for Horizon Galactique LTS
+
+# Securityme owns everything by default
+* @Securityme
+
+# Specific paths
+/docs/* @Securityme
+/src/components/* @Securityme
+/scripts/* @Securityme
+/strates/* @Securityme
+.github/workflows/* @Securityme
+
+# Auto-assign based on path
+/src/components/PrimUI/* @Securityme
+/src/components/DesignSystem/* @Securityme
