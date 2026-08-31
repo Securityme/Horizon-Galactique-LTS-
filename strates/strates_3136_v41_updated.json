@@ -1,0 +1,475 @@
+{
+  "reference": "SPEC-MASTER-HG-AE-2026-V41.0-LTS",
+  "revision": "41.0.2",
+  "total": 3136,
+  "adresse": "STR-S.R.F.P",
+  "loi": {
+    "S": "id//196",
+    "R": "(id%196)//49",
+    "F": "(id%49)//7",
+    "P": "id%7"
+  },
+  "cadence_hz": 24,
+  "github_integration": {
+    "repository": "Securityme/Horizon-Galactique-LTS-",
+    "analysis_date": "2026-08-31T10:01:07.603Z",
+    "current_status": {
+      "maturity": "L1",
+      "branches": 3,
+      "commits": 10,
+      "issues": 0,
+      "coverage": 0.19,
+      "compliance_score": 0.45,
+      "target_maturity": "L3",
+      "estimated_completion": "2026-10-15T00:00:00Z"
+    },
+    "technical_stack": {
+      "frontend": {
+        "react": "19.0.1",
+        "typescript": "5.8.2",
+        "vite": "6.2.3",
+        "tailwindcss": "4.1.14",
+        "status": "CONFIGURED"
+      },
+      "backend": {
+        "express": "4.21.2",
+        "firebase": "12.18.0",
+        "status": "CONFIGURED"
+      },
+      "ai": {
+        "google_genai": "2.4.0",
+        "status": "INTEGRATED"
+      }
+    }
+  },
+  "strates": [
+    {
+      "id": 0,
+      "str": "STR-01.00.00.00",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Base and saisie",
+      "famille_abstraite": "Primitive",
+      "role": "Base",
+      "designation": "Prim UI Base",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": "V40.2 #000",
+      "chemin_src": "/src/components/Base_and_saisie/Base/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "PARTIAL",
+        "file": "package.json",
+        "commit": "cf70cbe36094bb5b2a494842f32bbbf93fad23aa",
+        "priority": "P0",
+        "estimated_hours": 8,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": []
+      }
+    },
+    {
+      "id": 1,
+      "str": "STR-01.00.00.01",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Base and saisie",
+      "famille_abstraite": "Primitive",
+      "role": "Entree",
+      "designation": "Prim UI Entree",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": "V40.2 #001",
+      "chemin_src": "/src/components/Base_and_saisie/Entree/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "PARTIAL",
+        "file": null,
+        "commit": "cf70cbe36094bb5b2a494842f32bbbf93fad23aa",
+        "priority": "P0",
+        "estimated_hours": 8,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.00.00"
+        ]
+      }
+    },
+    {
+      "id": 2,
+      "str": "STR-01.00.00.02",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Base and saisie",
+      "famille_abstraite": "Primitive",
+      "role": "Mesure",
+      "designation": "Prim UI Mesure",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": "V40.2 #002",
+      "chemin_src": "/src/components/Base_and_saisie/Mesure/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "PARTIAL",
+        "file": "d3",
+        "commit": "cf70cbe36094bb5b2a494842f32bbbf93fad23aa",
+        "priority": "P0",
+        "estimated_hours": 8,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.00.01"
+        ]
+      }
+    },
+    {
+      "id": 3,
+      "str": "STR-01.00.00.03",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Base and saisie",
+      "famille_abstraite": "Primitive",
+      "role": "Agregat",
+      "designation": "Prim UI Agregat",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": "V40.2 #003",
+      "chemin_src": "/src/components/Base_and_saisie/Agregat/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "PARTIAL",
+        "file": "motion",
+        "commit": "cf70cbe36094bb5b2a494842f32bbbf93fad23aa",
+        "priority": "P0",
+        "estimated_hours": 8,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.00.02"
+        ]
+      }
+    },
+    {
+      "id": 4,
+      "str": "STR-01.00.00.04",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Base and saisie",
+      "famille_abstraite": "Primitive",
+      "role": "Signal",
+      "designation": "Prim UI Signal",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": "V40.2 #004",
+      "chemin_src": "/src/components/Base_and_saisie/Signal/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "PARTIAL",
+        "file": "lucide-react",
+        "commit": "cf70cbe36094bb5b2a494842f32bbbf93fad23aa",
+        "priority": "P0",
+        "estimated_hours": 8,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.00.03"
+        ]
+      }
+    },
+    {
+      "id": 5,
+      "str": "STR-01.00.00.05",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Base and saisie",
+      "famille_abstraite": "Primitive",
+      "role": "Norme",
+      "designation": "Prim UI Norme",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": "V40.2 #005",
+      "chemin_src": "/src/components/Base_and_saisie/Norme/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "PARTIAL",
+        "file": "tailwindcss",
+        "commit": "cf70cbe36094bb5b2a494842f32bbbf93fad23aa",
+        "priority": "P0",
+        "estimated_hours": 8,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.00.04"
+        ]
+      }
+    },
+    {
+      "id": 6,
+      "str": "STR-01.00.00.06",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Base and saisie",
+      "famille_abstraite": "Primitive",
+      "role": "Conteneur",
+      "designation": "Prim UI Conteneur",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": "V40.2 #006",
+      "chemin_src": "/src/components/Base_and_saisie/Conteneur/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "NOT_IMPLEMENTED",
+        "file": "vite.config.ts",
+        "commit": null,
+        "priority": "P0",
+        "estimated_hours": 12,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.00.05"
+        ]
+      }
+    },
+    {
+      "id": 7,
+      "str": "STR-01.00.01.00",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Design system tokens",
+      "famille_abstraite": "Contrat",
+      "role": "Base",
+      "designation": "DS Base",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": null,
+      "chemin_src": "/src/components/Design_system_tokens/Base/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "NOT_IMPLEMENTED",
+        "file": null,
+        "commit": null,
+        "priority": "P0",
+        "estimated_hours": 12,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.00.06"
+        ]
+      }
+    },
+    {
+      "id": 8,
+      "str": "STR-01.00.01.01",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Design system tokens",
+      "famille_abstraite": "Contrat",
+      "role": "Entree",
+      "designation": "DS Entree",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": null,
+      "chemin_src": "/src/components/Design_system_tokens/Entree/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "NOT_IMPLEMENTED",
+        "file": null,
+        "commit": null,
+        "priority": "P0",
+        "estimated_hours": 12,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.01.00"
+        ]
+      }
+    },
+    {
+      "id": 9,
+      "str": "STR-01.00.01.02",
+      "quadrant": "D",
+      "master": "VIEWPORT-MASTER",
+      "secteur": "S01",
+      "sous_quadrant": "D-A",
+      "rang": "CANON",
+      "rang_nom": "CANON",
+      "famille": "Design system tokens",
+      "famille_abstraite": "Contrat",
+      "role": "Mesure",
+      "designation": "DS Mesure",
+      "mission_rang": "Canon scelle, designation concue a la main.",
+      "theme_activation": null,
+      "lot": "L1",
+      "ere": 1,
+      "maturite": "SCELLE",
+      "activation": "ACTIF",
+      "origine_v402": null,
+      "chemin_src": "/src/components/Design_system_tokens/Mesure/index.tsx",
+      "proprietaire": "Securityme",
+      "tags": [
+        "github-integration",
+        "phase-1",
+        "priority-p0"
+      ],
+      "github_status": {
+        "implementation": "NOT_IMPLEMENTED",
+        "file": null,
+        "commit": null,
+        "priority": "P0",
+        "estimated_hours": 12,
+        "assigned_to": "Securityme",
+        "start_date": null,
+        "due_date": null,
+        "status": "TODO",
+        "blocked_by": null,
+        "dependencies": [
+          "STR-01.00.01.01"
+        ]
+      }
+    }
+  ]
+}
