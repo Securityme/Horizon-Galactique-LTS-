@@ -241,6 +241,13 @@ export function AppScreenRouter({
           onOpenTacticalDrawer={() => setIsTacticalDrawerOpen(true)}
           onOpenLogisticsDrawer={() => setIsLogisticsDrawerOpen(true)}
           onSelectResource={(rk) => setSelectedResourceKey(rk)}
+          activeFooterTab={activeFooterTab}
+          onFooterTabChange={(tab) => {
+            setHeaderState("H1_FOLDED");
+            setActiveFooterTab(tab);
+          }}
+          footerState={footerState}
+          onFooterStateChange={setFooterState}
         />
       </div>
 
@@ -248,7 +255,7 @@ export function AppScreenRouter({
       <main
         {...mainSwipeProps}
         className={`flex-1 overflow-y-auto min-h-0 overscroll-y-contain webkit-overflow-scrolling-touch touch-pan-y transition-all duration-300 relative ${
-          headerState === "H1_FOLDED" ? "pt-[134px]" : headerState === "H2_UNFOLDED_NAV" ? "pt-[180px]" : "pt-[134px]"
+          headerState === "H1_FOLDED" ? "pt-[178px]" : headerState === "H2_UNFOLDED_NAV" ? "pt-[224px]" : "pt-[178px]"
         } ${footerState === "F1_FOLDED" ? "pb-16" : footerState === "F2_UNFOLDED_METRICS" ? "pb-28" : "pb-28"}`}
       >
         {headerState !== "H1_FOLDED" ? (
@@ -326,6 +333,14 @@ export function AppScreenRouter({
             setActiveFooterTab(tab);
           }}
           onSpeedChange={onSpeedChange}
+          activeHeaderTab={activeHeaderTab}
+          onHeaderTabChange={(tab) => {
+            setFooterState("F1_FOLDED");
+            setHeaderState("H2_UNFOLDED_NAV");
+            setActiveHeaderTab(tab);
+          }}
+          headerState={headerState}
+          onHeaderStateChange={setHeaderState}
         />
       </div>
 

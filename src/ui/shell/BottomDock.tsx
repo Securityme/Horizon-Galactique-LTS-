@@ -1,8 +1,9 @@
 import React, { useState } from "react";
 import { GameState } from "../../simulation/engine";
 import { ThemeDefinition } from "../../theme/themes";
-import { FooterTierState } from "../../types/genesis";
+import { FooterTierState, HeaderTierState } from "../../types/genesis";
 import { proceduralRadio } from "../../audio/radio";
+import { PLANET_PRESETS } from "../../simulation/constants";
 import {
   Building2,
   FileText,
@@ -26,6 +27,8 @@ import {
   HardDrive,
   BarChart3,
   TrendingUp,
+  Play,
+  Pause,
 } from "lucide-react";
 
 interface BottomDockProps {
@@ -36,6 +39,11 @@ interface BottomDockProps {
   onFooterStateChange: (state: FooterTierState) => void;
   onFooterTabChange: (tab: "COLONIE" | "JOURNAL" | "SPATIAL") => void;
   onSpeedChange: (multiplier: number, isPaused: boolean) => void;
+  // Coordinate with 6 tabs system
+  activeHeaderTab?: "GOUVERNANCE" | "INFRASTRUCTURES_ARCHE" | "DECRETS";
+  onHeaderTabChange?: (tab: "GOUVERNANCE" | "INFRASTRUCTURES_ARCHE" | "DECRETS") => void;
+  headerState?: HeaderTierState;
+  onHeaderStateChange?: (state: HeaderTierState) => void;
 }
 
 export function BottomDock({
@@ -46,6 +54,10 @@ export function BottomDock({
   onFooterStateChange,
   onFooterTabChange,
   onSpeedChange,
+  activeHeaderTab,
+  onHeaderTabChange,
+  headerState,
+  onHeaderStateChange,
 }: BottomDockProps) {
   const unresolvedEventsCount = gameState.events.filter((e) => !e.resolved).length;
   const damagedBuildingsCount = gameState.buildings.filter((b) => b.status !== "NOMINAL").length;
@@ -333,91 +345,188 @@ export function BottomDock({
       )}
 
       {/* ========================================================= */}
-      {/* ÉTAGE F1 : DOCK DE BASE PERMANENT (52px)                  */}
+      {/* ÉTAGE F1 : DOCK DE BASE PERMANENT                         */}
       {/* ========================================================= */}
-      <footer className={`h-13 border-t flex items-center justify-between px-3 md:px-8 ${theme.cardBg} ${theme.cardBorder}`}>
-        {/* Toggle F2 Quick Metrics Button */}
-        <button
-          onClick={toggleF2}
-          className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
-            theme.isLight
-              ? "bg-white border-slate-300 text-slate-700 hover:bg-slate-100"
-              : "bg-slate-900 border-white/10 text-slate-400 hover:text-slate-200"
-          }`}
-          title="Télémétrie de surface F2"
-        >
-          {footerState !== "F1_FOLDED" ? <ChevronDown className="w-4 h-4" /> : <ChevronUp className="w-4 h-4" />}
-        </button>
-
-        {/* 3 Main Navigation Tabs */}
-        <div className="flex items-center justify-start sm:justify-center gap-2 sm:gap-4 flex-1 max-w-xl overflow-x-auto scroll-horizontal-touch flex-nowrap whitespace-nowrap px-1 scrollbar-none">
-          {[
-            {
-              id: "COLONIE",
-              label: "Colonie / SimCity",
-              icon: Building2,
-              badge: damagedBuildingsCount > 0 ? damagedBuildingsCount : null,
-              badgeColor: "bg-amber-500 text-black",
-            },
-            {
-              id: "JOURNAL",
-              label: "Journal & N.I.A.",
-              icon: FileText,
-              badge: unresolvedEventsCount > 0 ? unresolvedEventsCount : null,
-              badgeColor: "bg-sky-500 text-white animate-pulse",
-            },
-            {
-              id: "SPATIAL",
-              label: "4X Spatial",
-              icon: Compass,
-              badge: null,
-              badgeColor: "bg-indigo-500 text-white",
-            },
-          ].map((tab) => {
-            const Icon = tab.icon;
-            const isActive = activeFooterTab === tab.id;
-            return (
+      <footer className={`min-h-[70px] py-2.5 border-t grid grid-cols-1 md:grid-cols-12 gap-3 items-center px-4 md:px-8 ${theme.cardBg} ${theme.cardBorder}`}>
+        {/* COLONNE GAUCHE : PLANÈTE & SOUS-ONGLETS */}
+        <div className="md:col-span-4 flex flex-col items-start min-w-0">
+          <span className={`text-[11px] font-bold tracking-wider uppercase truncate ${theme.isLight ? "text-sky-900" : "text-sky-400"}`}>
+            🪐 {PLANET_PRESETS[gameState.genesis.pillar_2_environment.target_planet]?.name || gameState.genesis.pillar_2_environment.target_planet || "Aurelia Deserta"}
+          </span>
+          <div className="flex items-center gap-1.5 mt-1 overflow-x-auto whitespace-nowrap scrollbar-none max-w-full">
+            {[
+              {
+                label: "Plan de Masse",
+                action: () => {
+                  if (onHeaderStateChange) onHeaderStateChange("H1_FOLDED");
+                  onFooterTabChange("COLONIE");
+                }
+              },
+              {
+                label: "Population",
+                action: () => {
+                  if (onHeaderStateChange) onHeaderStateChange("H1_FOLDED");
+                  onFooterTabChange("COLONIE");
+                  onFooterStateChange("F3_FULL_EXPANDED");
+                  setF3ActiveSubTab("PALLIERS_PROGRESSION");
+                }
+              },
+              {
+                label: "Radio de Bord",
+                action: () => {
+                  if (onHeaderStateChange) onHeaderStateChange("H1_FOLDED");
+                  onFooterTabChange("JOURNAL");
+                }
+              }
+            ].map((sub, idx) => (
               <button
-                key={tab.id}
+                key={idx}
                 onClick={() => {
                   proceduralRadio.playUIChime("CLICK");
-                  onFooterTabChange(tab.id as any);
+                  sub.action();
                 }}
-                className={`relative px-3 sm:px-6 py-2 rounded-xl text-xs font-mono flex items-center gap-2 transition-all cursor-pointer border shrink-0 ${
-                  isActive
-                    ? theme.isLight
-                      ? "bg-sky-100 border-sky-500 text-sky-950 font-bold shadow-md scale-105"
-                      : "bg-sky-500/20 border-sky-400 text-sky-200 font-bold shadow-md scale-105"
-                    : theme.isLight
-                      ? "bg-white border-slate-300 text-slate-700 hover:bg-slate-100 hover:text-slate-900"
-                      : "bg-slate-950/60 border-white/5 text-slate-400 hover:text-slate-200 hover:border-white/15"
+                className={`px-1.5 py-0.5 rounded text-[9px] font-mono border cursor-pointer transition-all ${
+                  theme.isLight
+                    ? "bg-slate-100 hover:bg-slate-200 border-slate-300 text-slate-700 font-semibold"
+                    : "bg-slate-900/60 hover:bg-slate-800 border-white/5 text-slate-300 hover:border-white/10"
                 }`}
               >
-                <Icon className={`w-4 h-4 ${isActive && theme.isLight ? "text-sky-700" : ""}`} />
-                <span className="hidden xs:inline">{tab.label}</span>
-                {tab.badge && (
-                  <span className={`w-4 h-4 rounded-full text-[9px] font-bold flex items-center justify-center ${tab.badgeColor}`}>
-                    {tab.badge}
-                  </span>
-                )}
+                {sub.label}
               </button>
-            );
-          })}
+            ))}
+          </div>
         </div>
 
-        {/* Speed / Pause Indicators */}
-        <div className={`flex items-center gap-1.5 text-[11px] font-mono ${theme.isLight ? "text-slate-700" : "text-slate-400"}`}>
-          <span className={`font-bold hidden sm:inline ${theme.isLight ? "text-sky-800" : "text-sky-400"}`}>VITESSE ×{gameState.clock.speedMultiplier}</span>
+        {/* COLONNE CENTRALE : LES 3 TABS FOOTER & MINI JOURNAL TAPE */}
+        <div className="md:col-span-4 flex flex-col items-center gap-1.5 min-w-0">
+          {/* Main Navigation Tabs */}
+          <div className="flex items-center gap-2 max-w-full overflow-x-auto scrollbar-none">
+            {[
+              {
+                id: "COLONIE" as const,
+                label: "Colonie",
+                icon: Building2,
+                badge: damagedBuildingsCount > 0 ? damagedBuildingsCount : null,
+                badgeColor: "bg-amber-500 text-black",
+              },
+              {
+                id: "JOURNAL" as const,
+                label: "Journal",
+                icon: FileText,
+                badge: unresolvedEventsCount > 0 ? unresolvedEventsCount : null,
+                badgeColor: "bg-sky-500 text-white animate-pulse",
+              },
+              {
+                id: "SPATIAL" as const,
+                label: "Spatial",
+                icon: Compass,
+                badge: null,
+                badgeColor: "bg-indigo-500 text-white",
+              },
+            ].map((tab) => {
+              const Icon = tab.icon;
+              const isActive = activeFooterTab === tab.id;
+              return (
+                <button
+                  key={tab.id}
+                  onClick={() => {
+                    proceduralRadio.playUIChime("CLICK");
+                    onFooterTabChange(tab.id);
+                  }}
+                  className={`relative px-3.5 py-1.5 rounded-lg text-xs font-mono flex items-center gap-1.5 transition-all cursor-pointer border shrink-0 ${
+                    isActive
+                      ? theme.isLight
+                        ? "bg-sky-100 border-sky-500 text-sky-950 font-bold shadow-sm scale-105"
+                        : "bg-sky-500/20 border-sky-400 text-sky-200 font-bold shadow-sm scale-105"
+                      : theme.isLight
+                        ? "bg-white border-slate-300 text-slate-700 hover:bg-slate-100"
+                        : "bg-slate-950/60 border-white/5 text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  <Icon className={`w-3.5 h-3.5 ${isActive && theme.isLight ? "text-sky-700" : ""}`} />
+                  <span>{tab.label}</span>
+                  {tab.badge && (
+                    <span className={`w-3.5 h-3.5 rounded-full text-[8px] font-bold flex items-center justify-center ${tab.badgeColor}`}>
+                      {tab.badge}
+                    </span>
+                  )}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Mini Log / Ticker Journal */}
+          <div className={`w-full max-w-[280px] sm:max-w-xs md:max-w-sm px-2 py-0.5 rounded border text-[9px] font-mono flex items-center gap-1.5 truncate ${
+            theme.isLight ? "bg-slate-100/90 border-slate-200 text-slate-600" : "bg-black/40 border-white/5 text-slate-400"
+          }`}>
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shrink-0" />
+            <span className="font-extrabold text-sky-400 shrink-0">TELEMETRIE JOURNAL :</span>
+            <span className="truncate">
+              {gameState.activeAlerts[0]?.message || gameState.events.find((e) => !e.resolved)?.narrative.message || "Système nominal, tous les capteurs d'analyse dôme au vert."}
+            </span>
+          </div>
+        </div>
+
+        {/* COLONNE DROITE : VITESSE DU TEMPS, HORLOGE, FLUSH F2 */}
+        <div className="md:col-span-4 flex items-center justify-end gap-2 text-xs font-mono shrink-0">
+          {/* Pause / Play Control */}
           <button
-            onClick={toggleF3}
-            className={`p-1 rounded border transition-colors ${
-              theme.isLight
-                ? "bg-white border-slate-300 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
-                : "bg-slate-900 border-white/10 hover:border-sky-500/40 text-slate-400 hover:text-sky-300"
+            onClick={() => {
+              proceduralRadio.playUIChime("CLICK");
+              onSpeedChange(gameState.clock.speedMultiplier, !gameState.clock.isPaused);
+            }}
+            className={`h-7 px-2 rounded-md flex items-center gap-1 font-bold transition-all cursor-pointer border ${
+              gameState.clock.isPaused
+                ? "bg-amber-500/20 border-amber-400 text-amber-300 animate-pulse"
+                : "bg-emerald-500/15 border-emerald-500/40 text-emerald-300"
             }`}
-            title="Supervision Infrastructure F3"
           >
-            <Layers className="w-3.5 h-3.5" />
+            {gameState.clock.isPaused ? <Play className="w-3 h-3 fill-current text-amber-500" /> : <Pause className="w-3 h-3 fill-current text-emerald-500" />}
+            <span className="text-[10px]">{gameState.clock.isPaused ? "PAUSE" : "RUN"}</span>
+          </button>
+
+          {/* Multipliers */}
+          <div className={`flex items-center rounded-md p-0.5 border ${theme.isLight ? "bg-slate-200/80 border-slate-300" : "bg-black/40 border-white/10"}`}>
+            {[1, 2, 5].map((mult) => {
+              const isActive = !gameState.clock.isPaused && gameState.clock.speedMultiplier === mult;
+              return (
+                <button
+                  key={mult}
+                  onClick={() => {
+                    proceduralRadio.playUIChime("CLICK");
+                    onSpeedChange(mult, false);
+                  }}
+                  className={`h-5 px-1.5 rounded text-[9px] font-bold transition-colors cursor-pointer ${
+                    isActive
+                      ? "bg-sky-500/40 text-sky-100 font-extrabold"
+                      : "text-slate-400 hover:text-slate-200"
+                  }`}
+                >
+                  ×{mult}
+                </button>
+              );
+            })}
+          </div>
+
+          {/* Clock indicator */}
+          <div className={`px-2 py-0.5 rounded text-[10px] font-bold border flex items-center gap-1 shrink-0 ${
+            theme.isLight ? "bg-slate-100 border-slate-300 text-slate-800" : "bg-slate-900 border-white/10 text-slate-200"
+          }`}>
+            <span className="text-purple-400">SOL {gameState.clock.sol}</span>
+            <span className="opacity-60">{gameState.clock.tickInSol}:00</span>
+          </div>
+
+          {/* Toggle F2 Quick Metrics */}
+          <button
+            onClick={toggleF2}
+            className={`p-1.5 rounded-lg border transition-colors cursor-pointer ${
+              theme.isLight
+                ? "bg-white border-slate-300 text-slate-700 hover:bg-slate-100"
+                : "bg-slate-900 border-white/10 text-slate-400 hover:text-slate-200"
+            }`}
+            title="Télémétrie de surface F2"
+          >
+            {footerState !== "F1_FOLDED" ? <ChevronDown className="w-3.5 h-3.5" /> : <ChevronUp className="w-3.5 h-3.5" />}
           </button>
         </div>
       </footer>

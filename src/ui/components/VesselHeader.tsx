@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { GameState } from "../../simulation/engine";
 import { ThemeDefinition } from "../../theme/themes";
-import { HeaderTierState } from "../../types/genesis";
+import { HeaderTierState, FooterTierState } from "../../types/genesis";
 import { proceduralRadio } from "../../audio/radio";
 import { auth } from "../../lib/firebase";
 import { onAuthStateChanged, User } from "firebase/auth";
@@ -58,6 +58,10 @@ export interface VesselHeaderProps {
   onOpenTacticalDrawer?: () => void;
   onOpenLogisticsDrawer?: () => void;
   onSelectResource?: (resourceKey: ResourceKey) => void;
+  activeFooterTab?: "COLONIE" | "JOURNAL" | "SPATIAL";
+  onFooterTabChange?: (tab: "COLONIE" | "JOURNAL" | "SPATIAL") => void;
+  footerState?: FooterTierState;
+  onFooterStateChange?: (state: FooterTierState) => void;
 }
 
 export function VesselHeader({
@@ -80,6 +84,10 @@ export function VesselHeader({
   onOpenTacticalDrawer,
   onOpenLogisticsDrawer,
   onSelectResource,
+  activeFooterTab,
+  onFooterTabChange,
+  footerState,
+  onFooterStateChange,
 }: VesselHeaderProps) {
   const leader = gameState.genesis.pillar_1_governance.leader_profile;
   const spec = gameState.genesis.pillar_3_specialization;
@@ -627,6 +635,88 @@ export function VesselHeader({
                   {item.label}:
                 </span>
                 <strong className="text-[10px] md:text-[11px] font-bold whitespace-nowrap">{item.value}</strong>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* ========================================================= */}
+      {/* ÉTAGE 4 (BAS PERMANENT) : PROFIL LEADER & 6 TABS PRINCIPAUX */}
+      {/* ========================================================= */}
+      <div
+        className={`h-11 border-b flex items-center justify-between px-2.5 md:px-4 ${theme.cardBg} ${theme.cardBorder} text-xs font-mono shrink-0 overflow-x-auto scroll-horizontal-touch flex-nowrap whitespace-nowrap scrollbar-none`}
+      >
+        {/* Profil Leader Tab Header */}
+        <button
+          onClick={onOpenLeaderModal}
+          className={`flex items-center gap-2 h-8 px-2.5 rounded-lg border text-left transition-all cursor-pointer ${
+            theme.isLight
+              ? "bg-slate-100 border-slate-300 text-slate-800 hover:bg-slate-200"
+              : "bg-slate-900/80 border-white/10 text-slate-200 hover:border-sky-500/30"
+          }`}
+          title="Ouvrir la Console de Commandement du Leader"
+        >
+          <Award className="w-3.5 h-3.5 text-amber-500 animate-pulse shrink-0" />
+          <div className="flex flex-col leading-none">
+            <span className="text-[8px] text-slate-500 dark:text-slate-400 uppercase font-bold">Chef Suprême</span>
+            <span className={`text-[10px] font-bold truncate max-w-[120px] ${theme.isLight ? "text-sky-950" : "text-sky-300"}`}>
+              {leader.name}
+            </span>
+          </div>
+          <div className="flex items-center gap-1 ml-1 border-l border-slate-200 dark:border-white/10 pl-2 text-[9px] shrink-0">
+            <span className="text-emerald-500 font-bold flex items-center gap-0.5" title="Santé Globale">
+              ♥{Math.round(leader.overall_health_pct)}%
+            </span>
+            <span className="text-rose-500 font-bold flex items-center gap-0.5" title="Stress / Stabilité">
+              ★{Math.round(leader.happiness_pct)}%
+            </span>
+            <span className="text-purple-400 font-bold shrink-0">
+              Lvl {leader.mandate.leader_level}
+            </span>
+          </div>
+        </button>
+
+        {/* 6 Principal Tabs inside Header Floor 4 */}
+        <div className="flex items-center gap-1.5 ml-3 overflow-x-auto scrollbar-none shrink-0">
+          {[
+            { id: "GOUVERNANCE" as const, label: "Gouvernance", isHeader: true },
+            { id: "DECRETS" as const, label: "Décrets Lois", isHeader: true },
+            { id: "INFRASTRUCTURES_ARCHE" as const, label: "Infrastructures", isHeader: true },
+            { id: "COLONIE" as const, label: "Colonie (Dômes)", isHeader: false },
+            { id: "JOURNAL" as const, label: "Journal & N.I.A.", isHeader: false },
+            { id: "SPATIAL" as const, label: "4X Spatial", isHeader: false },
+          ].map((tab) => {
+            const isActive = tab.isHeader
+              ? activeHeaderTab === tab.id && headerState !== "H1_FOLDED"
+              : activeFooterTab === tab.id && headerState === "H1_FOLDED";
+
+            return (
+              <button
+                key={tab.id}
+                onClick={() => {
+                  proceduralRadio.playUIChime("CLICK");
+                  if (tab.isHeader) {
+                    if (onFooterStateChange) onFooterStateChange("F1_FOLDED");
+                    onHeaderStateChange("H2_UNFOLDED_NAV");
+                    onHeaderTabChange(tab.id as "GOUVERNANCE" | "INFRASTRUCTURES_ARCHE" | "DECRETS");
+                  } else {
+                    onHeaderStateChange("H1_FOLDED");
+                    if (onFooterTabChange) onFooterTabChange(tab.id as any);
+                    if (onFooterStateChange) onFooterStateChange("F2_UNFOLDED_METRICS");
+                  }
+                }}
+                className={`h-7 px-2.5 rounded-md text-[10px] font-bold font-mono transition-all cursor-pointer border shrink-0 ${
+                  isActive
+                    ? theme.isLight
+                      ? "bg-sky-100 border-sky-400 text-sky-950 font-extrabold shadow-sm scale-105"
+                      : "bg-sky-500/25 border-sky-400 text-sky-200 font-extrabold shadow-sm scale-105"
+                    : theme.isLight
+                    ? "bg-white/85 border-slate-200 text-slate-600 hover:text-slate-900 hover:bg-slate-100"
+                    : "bg-slate-950/40 border-white/5 text-slate-400 hover:text-slate-200 hover:border-white/10"
+                }`}
+              >
+                {tab.label}
               </button>
             );
           })}
