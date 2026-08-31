@@ -1,0 +1,39 @@
+name: Generate Strates Matrix
+
+on:
+  push:
+    branches: [ dev ]
+    paths:
+      - 'scripts/generateStrates.ts'
+  workflow_dispatch:
+    inputs:
+      force:
+        description: 'Force regeneration'
+        required: false
+        default: 'false'
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: oven-sh/setup-bun@v1
+        with:
+          bun-version: latest
+
+      - name: Install dependencies
+        run: bun install --frozen-lockfile
+
+      - name: Generate strates matrix
+        run: bun run generate:strates
+
+      - name: Commit changes
+        run: |
+          git config --global user.name "GitHub Actions"
+          git config --global user.email "actions@github.com"
+          git add strates/strates_3136_v41_updated.json
+          git diff --cached --quiet || git commit -m "chore: auto-generate strates matrix"
+          git push
